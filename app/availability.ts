@@ -7,11 +7,26 @@ export class Availability implements ForGettingAvailability {
   event: Event | undefined;
 
   getAvailability(month: Date): Record<string, Timeslot[]> | Error {
+    const result: Record<string, Timeslot[]> = {};
     if(!this.event) {
       return new Error('Event is not set');
     }
 
-    return {};
+    const startOfMonth = new Date(Date.UTC(month.getUTCFullYear(), month.getUTCMonth()))
+    const endOfMonth = this.getEndOfMonth(startOfMonth);
+    for(let date = 1; date <= endOfMonth.getUTCDate(); date++) {
+      console.log('date', date)
+      console.log('utcDate', endOfMonth.getUTCDate())
+      console.log('comparison', date <= endOfMonth.getUTCDate());
+      const today = new Date(Date.UTC(month.getUTCFullYear(), month.getUTCMonth(), date));
+      const timeslots = this.getAvailabilityInADay(today);
+      if(timeslots instanceof Error) {
+        return timeslots;
+      }
+      result[today.toISOString()] = timeslots;
+    }
+
+    return result;
   }
 
   getAvailabilityInADay(date: Date): Timeslot[] | Error {
