@@ -15,3 +15,13 @@ export class AvailableHours {
     this.end = data.end;
   }
 }
+
+export class Timeslot {
+  start: Date;
+  end: Date;
+
+  constructor(data: Timeslot) {
+    this.start = data.start;
+    this.end = data.end
+  }
+}

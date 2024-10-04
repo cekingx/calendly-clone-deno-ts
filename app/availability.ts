@@ -1,0 +1,61 @@
+import { DAY } from "@std/datetime";
+import { ForGettingAvailability } from './driving-port/for-getting-availability.ts';
+import type { Event } from "./entity/event.ts";
+import { AvailableHours, Timeslot } from './entity/schedule.ts';
+
+export class Availability implements ForGettingAvailability {
+  event: Event | undefined;
+
+  getAvailability(month: Date): Record<string, Timeslot[]> | Error {
+    if(!this.event) {
+      return new Error('Event is not set');
+    }
+
+    return {};
+  }
+
+  getAvailabilityInADay(date: Date): Date[] | Error {
+    const timeslots: Date[] = [];
+    if(!this.event?.schedule?.days) {
+      return new Error("Days is empty")
+    }
+    const day = date.getUTCDay();
+    for (const dayOfWeek of Object.keys(this.event?.schedule?.days)) {
+      if(day != Number(dayOfWeek)) {
+        continue;
+      }
+    }
+
+    return timeslots;
+  }
+
+  getSlotInRange(date: Date, availability: AvailableHours): Timeslot[] | Error {
+    const result: Timeslot[] = []
+    if(!this.event?.duration) {
+      return new Error("Duration not set")
+    }
+
+    const availableSlot = Math.floor((availability.end - availability.start) / this.event?.duration);
+    for(let i = 0; i < availableSlot; i++) {
+      const start = availability.start + (this.event.duration * i)
+      const end = availability.start + (this.event.duration * (i + 1))
+
+      result.push({
+        start: new Date(date.getTime() + start),
+        end: new Date(date.getTime() + end)
+      })
+    }
+
+    return result;
+  }
+
+  getEndOfMonth(date: Date): Date {
+    const nextMonth = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + 1));
+    const endOfMonth = new Date(nextMonth.getTime() - 1 * DAY);
+    return endOfMonth;
+  }
+
+  setEvent(event: Event) {
+    this.event = event;
+  }
+}
