@@ -14,8 +14,8 @@ export class Availability implements ForGettingAvailability {
     return {};
   }
 
-  getAvailabilityInADay(date: Date): Date[] | Error {
-    const timeslots: Date[] = [];
+  getAvailabilityInADay(date: Date): Timeslot[] | Error {
+    const timeslots: Timeslot[] = [];
     if(!this.event?.schedule?.days) {
       return new Error("Days is empty")
     }
@@ -23,6 +23,14 @@ export class Availability implements ForGettingAvailability {
     for (const dayOfWeek of Object.keys(this.event?.schedule?.days)) {
       if(day != Number(dayOfWeek)) {
         continue;
+      }
+
+      for(const availableHour of this.event.schedule.days[Number(dayOfWeek)]) {
+        const slot = this.getSlotInRange(date, availableHour)
+        if(slot instanceof Error) {
+          return slot
+        }
+        timeslots.push(...slot)
       }
     }
 

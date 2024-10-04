@@ -11,7 +11,7 @@ describe("Calendly", () => {
   beforeEach(function () {
     const schedule = new Schedule();
     schedule.setHours({
-      0: [
+      1: [
         new AvailableHours({ start: 8 * HOUR, end: 10 * HOUR }),
         new AvailableHours({ start: 17 * HOUR, end: 18 * HOUR })
       ],
@@ -36,7 +36,7 @@ describe("Calendly", () => {
   })
 
   // it("should get availability for a month", () => {
-  //   const availability = app.getAvailability(new Date(Date.UTC(2024, 1, 1)));
+  //   const availability = app.getAvailability(new Date(Date.UTC(2024, 0, 1)));
   //   expect(availability).toEqual({
   //     "2024-01-01T00:00:00": [
   //       { start: "2024-01-01T08:00:00", end: "2024-01-01T09:00:00" },
@@ -112,10 +112,22 @@ describe("Calendly", () => {
         new Date(Date.UTC(2024, 0, 1)),
         { start: 8 * HOUR, end: 9 * HOUR }
       )
+
       expect(slots).toEqual([
         { start: new Date("2024-01-01T08:00:00Z"), end: new Date("2024-01-01T09:00:00Z") },
       ])
     })
   })
 
+  describe("Timeslot in a day", function () {
+    it("should get three slot", function () {
+      const slots = app.getAvailabilityInADay(new Date(Date.UTC(2024, 0, 1)))
+
+      expect(slots).toEqual([
+        { start: new Date("2024-01-01T08:00:00Z"), end: new Date("2024-01-01T09:00:00Z") },
+        { start: new Date("2024-01-01T09:00:00Z"), end: new Date("2024-01-01T10:00:00Z") },
+        { start: new Date("2024-01-01T17:00:00Z"), end: new Date("2024-01-01T18:00:00Z") }
+      ])
+    })
+  })
 })
