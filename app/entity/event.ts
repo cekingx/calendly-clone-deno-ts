@@ -1,4 +1,6 @@
-import type { Schedule } from "./schedule.ts";
+import type { AvailableHours } from "./available-hours.ts";
+
+export type Schedule = Record<number, AvailableHours[]>
 
 export class Event {
   name: string | undefined;

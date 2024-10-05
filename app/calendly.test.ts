@@ -1,5 +1,4 @@
 import { beforeEach, describe, it } from "@std/testing/bdd";
-import { Schedule } from "./entity/schedule.ts";
 import { Event } from "./entity/event.ts";
 import { expect } from "@std/expect";
 import { HOUR, MINUTE } from "@std/datetime";
@@ -7,8 +6,12 @@ import { Calendly } from "./calendly.ts";
 import { AvailableHours } from "./entity/available-hours.ts";
 import type { ForInteractingWithEventModel } from "./driven-port/for-interacting-with-event-model.ts";
 
-const schedule = new Schedule();
-schedule.setHours({
+const event = new Event({
+  name: "Meeting",
+  duration: 60 * MINUTE,
+  description: "Meeting description",
+});
+event.setSchedule({
   1: [
     new AvailableHours({ start: 8 * HOUR, end: 10 * HOUR }),
     new AvailableHours({ start: 17 * HOUR, end: 18 * HOUR }),
@@ -17,13 +20,6 @@ schedule.setHours({
     new AvailableHours({ start: 17 * HOUR, end: 18 * HOUR }),
   ],
 });
-
-const event = new Event({
-  name: "Meeting",
-  duration: 60 * MINUTE,
-  description: "Meeting description",
-});
-event.setSchedule(schedule);
 
 const mockEventRepo: ForInteractingWithEventModel = {
   getById: function (_id: number): Promise<Event | Error> {

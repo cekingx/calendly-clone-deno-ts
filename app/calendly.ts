@@ -19,11 +19,11 @@ export class Calendly implements ForGettingAvailability {
     if (event instanceof Error) {
       return event;
     }
-    if (!event.schedule?.days) {
+    if (!event.schedule) {
       return new Error("Days is not set");
     }
     const result: Record<string, Timeslot[]> = {};
-    const daysArray = Object.keys(event.schedule.days).map((item) =>
+    const daysArray = Object.keys(event.schedule).map((item) =>
       Number(item)
     );
 
@@ -50,16 +50,16 @@ export class Calendly implements ForGettingAvailability {
 
   getAvailabilityInADay(date: Date, event: Event): Timeslot[] | Error {
     const timeslots: Timeslot[] = [];
-    if (!event?.schedule?.days) {
+    if (!event?.schedule) {
       return new Error("Days is not set");
     }
     const day = date.getUTCDay();
-    for (const dayOfWeek of Object.keys(event?.schedule?.days)) {
+    for (const dayOfWeek of Object.keys(event?.schedule)) {
       if (day != Number(dayOfWeek)) {
         continue;
       }
 
-      for (const availableHour of event.schedule.days[Number(dayOfWeek)]) {
+      for (const availableHour of event.schedule[Number(dayOfWeek)]) {
         const slot = this.getSlotInRange(date, availableHour, event);
         if (slot instanceof Error) {
           return slot;
