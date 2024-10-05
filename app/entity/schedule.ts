@@ -17,8 +17,8 @@ export class AvailableHours {
 }
 
 export class Timeslot {
-  start: Date;
-  end: Date;
+  start: string;
+  end: string;
 
   constructor(data: Timeslot) {
     this.start = data.start;

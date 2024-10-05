@@ -76,8 +76,8 @@ export class Availability implements ForGettingAvailability {
       const end = availability.start + (this.event.duration * (i + 1));
 
       result.push({
-        start: new Date(date.getTime() + start),
-        end: new Date(date.getTime() + end),
+        start: (new Date(date.getTime() + start)).toISOString(),
+        end: (new Date(date.getTime() + end)).toISOString(),
       });
     }
 
