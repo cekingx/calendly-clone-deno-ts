@@ -5,39 +5,54 @@ import { expect } from "@std/expect";
 import { HOUR, MINUTE } from "@std/datetime";
 import { Calendly } from "./calendly.ts";
 import { AvailableHours } from "./entity/available-hours.ts";
+import type { ForInteractingWithEventModel } from "./driven-port/for-interacting-with-event-model.ts";
+
+const schedule = new Schedule();
+schedule.setHours({
+  1: [
+    new AvailableHours({ start: 8 * HOUR, end: 10 * HOUR }),
+    new AvailableHours({ start: 17 * HOUR, end: 18 * HOUR }),
+  ],
+  3: [
+    new AvailableHours({ start: 17 * HOUR, end: 18 * HOUR }),
+  ],
+});
+
+const event = new Event({
+  name: "Meeting",
+  duration: 60 * MINUTE,
+  description: "Meeting description",
+});
+event.setSchedule(schedule);
+
+const mockEventRepo: ForInteractingWithEventModel = {
+  getById: function (_id: number): Promise<Event | Error> {
+    return new Promise((resolve) => resolve(event));
+  },
+  save: function (_event: Event): Promise<Event | Error> {
+    return new Promise((_resolve, reject) =>
+      reject(new Error("Unimplemented"))
+    );
+  },
+};
 
 describe("Calendly", () => {
   let app: Calendly;
 
   beforeEach(function () {
-    const schedule = new Schedule();
-    schedule.setHours({
-      1: [
-        new AvailableHours({ start: 8 * HOUR, end: 10 * HOUR }),
-        new AvailableHours({ start: 17 * HOUR, end: 18 * HOUR }),
-      ],
-      3: [
-        new AvailableHours({ start: 17 * HOUR, end: 18 * HOUR }),
-      ],
-    });
-
-    const event = new Event({
-      name: "Meeting",
-      duration: 60 * MINUTE,
-      description: "Meeting description",
-    });
-    event.setSchedule(schedule);
-
     app = new Calendly();
-    app.setEvent(event);
+    app.setEventRepo(mockEventRepo);
   });
 
-  it("should console", function () {
-    console.log("event", app.event);
+  it("should console", async function () {
+    console.log("event", await app.getEvent(1));
   });
 
-  it("should get availability for a month", () => {
-    const availability = app.getAvailability(new Date(Date.UTC(2024, 0, 1)));
+  it("should get availability for a month", async () => {
+    const availability = await app.getAvailability(
+      new Date(Date.UTC(2024, 0, 1)),
+      1,
+    );
     expect(availability).toEqual({
       "2024-01-01T00:00:00.000Z": [
         { start: "2024-01-01T08:00:00.000Z", end: "2024-01-01T09:00:00.000Z" },
@@ -96,11 +111,12 @@ describe("Calendly", () => {
     expect(endOfApril).toEqual(new Date(Date.UTC(2024, 3, 30)));
   });
 
-  describe("Timeslot in a range", function () {
+  describe("Timeslot in a range", () => {
     it("should get two slot", () => {
       const slots = app.getSlotInRange(
         new Date(Date.UTC(2024, 0, 1)),
         { start: 8 * HOUR, end: 10 * HOUR },
+        event,
       );
       expect(slots).toEqual([
         {
@@ -118,6 +134,7 @@ describe("Calendly", () => {
       const slots = app.getSlotInRange(
         new Date(Date.UTC(2024, 0, 1)),
         { start: 8 * HOUR, end: 9 * HOUR },
+        event,
       );
 
       expect(slots).toEqual([
@@ -129,9 +146,12 @@ describe("Calendly", () => {
     });
   });
 
-  describe("Timeslot in a day", function () {
-    it("should get three slot", function () {
-      const slots = app.getAvailabilityInADay(new Date(Date.UTC(2024, 0, 1)));
+  describe("Timeslot in a day", () => {
+    it("should get three slot", () => {
+      const slots = app.getAvailabilityInADay(
+        new Date(Date.UTC(2024, 0, 1)),
+        event,
+      );
 
       expect(slots).toEqual([
         {

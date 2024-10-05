@@ -1,4 +1,4 @@
-import { AvailableHours } from './available-hours.ts'
+import { AvailableHours } from "./available-hours.ts";
 
 export class Schedule {
   days: Record<number, AvailableHours[]> | undefined;

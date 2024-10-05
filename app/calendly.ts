@@ -3,19 +3,27 @@ import { ForGettingAvailability } from "./driving-port/for-getting-availability.
 import type { Event } from "./entity/event.ts";
 import type { Timeslot } from "./entity/timeslot.ts";
 import type { AvailableHours } from "./entity/available-hours.ts";
+import type { ForInteractingWithEventModel } from "./driven-port/for-interacting-with-event-model.ts";
 
 export class Calendly implements ForGettingAvailability {
-  event: Event | undefined;
+  eventRepo: ForInteractingWithEventModel | undefined;
 
-  getAvailability(month: Date): Record<string, Timeslot[]> | Error {
-    const result: Record<string, Timeslot[]> = {};
-    if (!this.event) {
-      return new Error("Event is not set");
+  async getAvailability(
+    month: Date,
+    eventId: number,
+  ): Promise<Record<string, Timeslot[]> | Error> {
+    if (!this.eventRepo) {
+      return new Error("Repo not set");
     }
-    if (!this.event?.schedule?.days) {
+    const event = await this.eventRepo.getById(eventId);
+    if (event instanceof Error) {
+      return event;
+    }
+    if (!event.schedule?.days) {
       return new Error("Days is not set");
     }
-    const daysArray = Object.keys(this.event.schedule?.days).map((item) =>
+    const result: Record<string, Timeslot[]> = {};
+    const daysArray = Object.keys(event.schedule.days).map((item) =>
       Number(item)
     );
 
@@ -30,7 +38,7 @@ export class Calendly implements ForGettingAvailability {
       if (!daysArray.includes(today.getUTCDay())) {
         continue;
       }
-      const timeslots = this.getAvailabilityInADay(today);
+      const timeslots = this.getAvailabilityInADay(today, event);
       if (timeslots instanceof Error) {
         return timeslots;
       }
@@ -40,19 +48,19 @@ export class Calendly implements ForGettingAvailability {
     return result;
   }
 
-  getAvailabilityInADay(date: Date): Timeslot[] | Error {
+  getAvailabilityInADay(date: Date, event: Event): Timeslot[] | Error {
     const timeslots: Timeslot[] = [];
-    if (!this.event?.schedule?.days) {
+    if (!event?.schedule?.days) {
       return new Error("Days is not set");
     }
     const day = date.getUTCDay();
-    for (const dayOfWeek of Object.keys(this.event?.schedule?.days)) {
+    for (const dayOfWeek of Object.keys(event?.schedule?.days)) {
       if (day != Number(dayOfWeek)) {
         continue;
       }
 
-      for (const availableHour of this.event.schedule.days[Number(dayOfWeek)]) {
-        const slot = this.getSlotInRange(date, availableHour);
+      for (const availableHour of event.schedule.days[Number(dayOfWeek)]) {
+        const slot = this.getSlotInRange(date, availableHour, event);
         if (slot instanceof Error) {
           return slot;
         }
@@ -63,18 +71,22 @@ export class Calendly implements ForGettingAvailability {
     return timeslots;
   }
 
-  getSlotInRange(date: Date, availability: AvailableHours): Timeslot[] | Error {
+  getSlotInRange(
+    date: Date,
+    availability: AvailableHours,
+    event: Event,
+  ): Timeslot[] | Error {
     const result: Timeslot[] = [];
-    if (!this.event?.duration) {
+    if (!event?.duration) {
       return new Error("Duration not set");
     }
 
     const availableSlot = Math.floor(
-      (availability.end - availability.start) / this.event?.duration,
+      (availability.end - availability.start) / event.duration,
     );
     for (let i = 0; i < availableSlot; i++) {
-      const start = availability.start + (this.event.duration * i);
-      const end = availability.start + (this.event.duration * (i + 1));
+      const start = availability.start + (event.duration * i);
+      const end = availability.start + (event.duration * (i + 1));
 
       result.push({
         start: (new Date(date.getTime() + start)).toISOString(),
@@ -93,7 +105,14 @@ export class Calendly implements ForGettingAvailability {
     return endOfMonth;
   }
 
-  setEvent(event: Event) {
-    this.event = event;
+  async getEvent(id: number): Promise<Event | Error> {
+    if (!this.eventRepo) {
+      return new Error("Repo not set");
+    }
+    return this.eventRepo.getById(id);
+  }
+
+  setEventRepo(repo: ForInteractingWithEventModel) {
+    this.eventRepo = repo;
   }
 }

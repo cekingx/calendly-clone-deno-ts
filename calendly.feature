@@ -1,5 +1,7 @@
 Feature: User Availability for an event
 
+  Only for one user and one event, so ignore multi user and multi event at the moment
+
   Scenario: User set availabilty
     When the user set their available time slot in a week
     Then the user availability should updated
