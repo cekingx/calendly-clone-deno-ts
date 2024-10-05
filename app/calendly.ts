@@ -1,9 +1,10 @@
 import { DAY } from "@std/datetime";
 import { ForGettingAvailability } from "./driving-port/for-getting-availability.ts";
 import type { Event } from "./entity/event.ts";
-import { AvailableHours, Timeslot } from "./entity/schedule.ts";
+import type { Timeslot } from "./entity/timeslot.ts";
+import type { AvailableHours } from "./entity/available-hours.ts";
 
-export class Availability implements ForGettingAvailability {
+export class Calendly implements ForGettingAvailability {
   event: Event | undefined;
 
   getAvailability(month: Date): Record<string, Timeslot[]> | Error {

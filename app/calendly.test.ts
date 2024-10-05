@@ -1,12 +1,13 @@
 import { beforeEach, describe, it } from "@std/testing/bdd";
-import { AvailableHours, Schedule } from "./entity/schedule.ts";
+import { Schedule } from "./entity/schedule.ts";
 import { Event } from "./entity/event.ts";
-import { Availability } from "./availability.ts";
 import { expect } from "@std/expect";
 import { HOUR, MINUTE } from "@std/datetime";
+import { Calendly } from "./calendly.ts";
+import { AvailableHours } from "./entity/available-hours.ts";
 
 describe("Calendly", () => {
-  let app: Availability;
+  let app: Calendly;
 
   beforeEach(function () {
     const schedule = new Schedule();
@@ -27,7 +28,7 @@ describe("Calendly", () => {
     });
     event.setSchedule(schedule);
 
-    app = new Availability();
+    app = new Calendly();
     app.setEvent(event);
   });
 
