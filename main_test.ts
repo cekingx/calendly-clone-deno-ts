@@ -6,4 +6,4 @@ describe("Add", () => {
   it("should add two numbers", () => {
     assertEquals(add(1, 2), 3);
   });
-})
+});

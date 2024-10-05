@@ -22,6 +22,6 @@ export class Timeslot {
 
   constructor(data: Timeslot) {
     this.start = data.start;
-    this.end = data.end
+    this.end = data.end;
   }
 }

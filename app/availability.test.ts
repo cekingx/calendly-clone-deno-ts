@@ -13,31 +13,31 @@ describe("Calendly", () => {
     schedule.setHours({
       1: [
         new AvailableHours({ start: 8 * HOUR, end: 10 * HOUR }),
-        new AvailableHours({ start: 17 * HOUR, end: 18 * HOUR })
+        new AvailableHours({ start: 17 * HOUR, end: 18 * HOUR }),
       ],
       3: [
-        new AvailableHours({ start: 17 * HOUR, end: 18 * HOUR })
-      ]
-    })
+        new AvailableHours({ start: 17 * HOUR, end: 18 * HOUR }),
+      ],
+    });
 
     const event = new Event({
       name: "Meeting",
       duration: 60 * MINUTE,
       description: "Meeting description",
-    })
+    });
     event.setSchedule(schedule);
 
     app = new Availability();
     app.setEvent(event);
-  })
+  });
 
   it("should console", function () {
-    console.log('event', app.event)
-  })
+    console.log("event", app.event);
+  });
 
   it("should get availability for a month", () => {
     const availability = app.getAvailability(new Date(Date.UTC(2024, 0, 1)));
-    console.log('availability', availability)
+    console.log("availability", availability);
     // expect(availability).toEqual({
     //   "2024-01-01T00:00:00": [
     //     { start: "2024-01-01T08:00:00", end: "2024-01-01T09:00:00" },
@@ -94,41 +94,59 @@ describe("Calendly", () => {
     const april = new Date(Date.UTC(2024, 3, 1));
     const endOfApril = app.getEndOfMonth(april);
     expect(endOfApril).toEqual(new Date(Date.UTC(2024, 3, 30)));
-  })
+  });
 
   describe("Timeslot in a range", function () {
     it("should get two slot", () => {
       const slots = app.getSlotInRange(
         new Date(Date.UTC(2024, 0, 1)),
-        { start: 8 * HOUR, end: 10 * HOUR }
-      )
+        { start: 8 * HOUR, end: 10 * HOUR },
+      );
       expect(slots).toEqual([
-        { start: new Date("2024-01-01T08:00:00Z"), end: new Date("2024-01-01T09:00:00Z") },
-        { start: new Date("2024-01-01T09:00:00Z"), end: new Date("2024-01-01T10:00:00Z") }
-      ])
-    })
+        {
+          start: new Date("2024-01-01T08:00:00Z"),
+          end: new Date("2024-01-01T09:00:00Z"),
+        },
+        {
+          start: new Date("2024-01-01T09:00:00Z"),
+          end: new Date("2024-01-01T10:00:00Z"),
+        },
+      ]);
+    });
 
     it("should get one slot", () => {
       const slots = app.getSlotInRange(
         new Date(Date.UTC(2024, 0, 1)),
-        { start: 8 * HOUR, end: 9 * HOUR }
-      )
+        { start: 8 * HOUR, end: 9 * HOUR },
+      );
 
       expect(slots).toEqual([
-        { start: new Date("2024-01-01T08:00:00Z"), end: new Date("2024-01-01T09:00:00Z") },
-      ])
-    })
-  })
+        {
+          start: new Date("2024-01-01T08:00:00Z"),
+          end: new Date("2024-01-01T09:00:00Z"),
+        },
+      ]);
+    });
+  });
 
   describe("Timeslot in a day", function () {
     it("should get three slot", function () {
-      const slots = app.getAvailabilityInADay(new Date(Date.UTC(2024, 0, 1)))
+      const slots = app.getAvailabilityInADay(new Date(Date.UTC(2024, 0, 1)));
 
       expect(slots).toEqual([
-        { start: new Date("2024-01-01T08:00:00Z"), end: new Date("2024-01-01T09:00:00Z") },
-        { start: new Date("2024-01-01T09:00:00Z"), end: new Date("2024-01-01T10:00:00Z") },
-        { start: new Date("2024-01-01T17:00:00Z"), end: new Date("2024-01-01T18:00:00Z") }
-      ])
-    })
-  })
-})
+        {
+          start: new Date("2024-01-01T08:00:00Z"),
+          end: new Date("2024-01-01T09:00:00Z"),
+        },
+        {
+          start: new Date("2024-01-01T09:00:00Z"),
+          end: new Date("2024-01-01T10:00:00Z"),
+        },
+        {
+          start: new Date("2024-01-01T17:00:00Z"),
+          end: new Date("2024-01-01T18:00:00Z"),
+        },
+      ]);
+    });
+  });
+});
