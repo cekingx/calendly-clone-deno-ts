@@ -24,11 +24,11 @@ export class Calendly implements ForGettingAvailability {
     }
     const result: Record<string, Timeslot[]> = {};
     const daysOfWeek = event.schedule.reduce((acc: number[], item) => {
-      if(item.day && !acc.includes(item.day)) {
-        acc.push(item.day)
+      if (item.day && !acc.includes(item.day)) {
+        acc.push(item.day);
       }
       return acc;
-    }, [])
+    }, []);
 
     const startOfMonth = new Date(
       Date.UTC(month.getUTCFullYear(), month.getUTCMonth()),
@@ -58,15 +58,15 @@ export class Calendly implements ForGettingAvailability {
     }
     const day = date.getUTCDay();
     const availabilityInADay = event.schedule
-      .filter((item) => item.day == day)
+      .filter((item) => item.day == day);
 
-    for(const availableSlot of availabilityInADay) {
-      const slot = this.getSlotInRange(date, availableSlot, event)
+    for (const availableSlot of availabilityInADay) {
+      const slot = this.getSlotInRange(date, availableSlot, event);
       if (slot instanceof Error) {
-        return slot
+        return slot;
       }
-      timeslots.push(...slot)
-    } 
+      timeslots.push(...slot);
+    }
     // for (const dayOfWeek of Object.keys(event?.schedule)) {
     //   if (day != Number(dayOfWeek)) {
     //     continue;
