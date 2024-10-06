@@ -67,19 +67,6 @@ export class Calendly implements ForGettingAvailability {
       }
       timeslots.push(...slot);
     }
-    // for (const dayOfWeek of Object.keys(event?.schedule)) {
-    //   if (day != Number(dayOfWeek)) {
-    //     continue;
-    //   }
-
-    //   for (const availableHour of event.schedule[Number(dayOfWeek)]) {
-    //     const slot = this.getSlotInRange(date, availableHour, event);
-    //     if (slot instanceof Error) {
-    //       return slot;
-    //     }
-    //     timeslots.push(...slot);
-    //   }
-    // }
 
     return timeslots;
   }
