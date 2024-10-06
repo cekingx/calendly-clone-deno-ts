@@ -11,15 +11,11 @@ const event = new Event({
   duration: 60 * MINUTE,
   description: "Meeting description",
 });
-event.setSchedule({
-  1: [
-    new AvailableHours({ start: 8 * HOUR, end: 10 * HOUR }),
-    new AvailableHours({ start: 17 * HOUR, end: 18 * HOUR }),
-  ],
-  3: [
-    new AvailableHours({ start: 17 * HOUR, end: 18 * HOUR }),
-  ],
-});
+event.setSchedule([
+  new AvailableHours({ day: 1, start: 8 * HOUR, end: 10 * HOUR }),
+  new AvailableHours({ day: 1, start: 17 * HOUR, end: 18 * HOUR }),
+  new AvailableHours({ day: 3, start: 17 * HOUR, end: 18 * HOUR }),
+]);
 
 const mockEventRepo: ForInteractingWithEventModel = {
   getById: function (_id: number): Promise<Event | Error> {
@@ -111,7 +107,7 @@ describe("Calendly", () => {
     it("should get two slot", () => {
       const slots = app.getSlotInRange(
         new Date(Date.UTC(2024, 0, 1)),
-        { start: 8 * HOUR, end: 10 * HOUR },
+        { day: 1, start: 8 * HOUR, end: 10 * HOUR },
         event,
       );
       expect(slots).toEqual([
@@ -129,7 +125,7 @@ describe("Calendly", () => {
     it("should get one slot", () => {
       const slots = app.getSlotInRange(
         new Date(Date.UTC(2024, 0, 1)),
-        { start: 8 * HOUR, end: 9 * HOUR },
+        { day: 1, start: 8 * HOUR, end: 9 * HOUR },
         event,
       );
 

@@ -1,12 +1,10 @@
 import type { AvailableHours } from "./available-hours.ts";
 
-export type Schedule = Record<number, AvailableHours[]>
-
 export class Event {
   name: string | undefined;
   duration: number | undefined;
   description: string | undefined;
-  schedule: Schedule | undefined;
+  schedule: AvailableHours[] | undefined;
 
   constructor(data: Partial<Event>) {
     this.name = data.name;
@@ -14,7 +12,7 @@ export class Event {
     this.description = data.description;
   }
 
-  setSchedule(schedule: Schedule) {
+  setSchedule(schedule: AvailableHours[]) {
     this.schedule = schedule;
   }
 }

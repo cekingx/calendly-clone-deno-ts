@@ -23,9 +23,12 @@ export class Calendly implements ForGettingAvailability {
       return new Error("Days is not set");
     }
     const result: Record<string, Timeslot[]> = {};
-    const daysArray = Object.keys(event.schedule).map((item) =>
-      Number(item)
-    );
+    const daysOfWeek = event.schedule.reduce((acc: number[], item) => {
+      if(item.day && !acc.includes(item.day)) {
+        acc.push(item.day)
+      }
+      return acc;
+    }, [])
 
     const startOfMonth = new Date(
       Date.UTC(month.getUTCFullYear(), month.getUTCMonth()),
@@ -35,7 +38,7 @@ export class Calendly implements ForGettingAvailability {
       const today = new Date(
         Date.UTC(month.getUTCFullYear(), month.getUTCMonth(), date),
       );
-      if (!daysArray.includes(today.getUTCDay())) {
+      if (!daysOfWeek.includes(today.getUTCDay())) {
         continue;
       }
       const timeslots = this.getAvailabilityInADay(today, event);
@@ -54,19 +57,29 @@ export class Calendly implements ForGettingAvailability {
       return new Error("Days is not set");
     }
     const day = date.getUTCDay();
-    for (const dayOfWeek of Object.keys(event?.schedule)) {
-      if (day != Number(dayOfWeek)) {
-        continue;
-      }
+    const availabilityInADay = event.schedule
+      .filter((item) => item.day == day)
 
-      for (const availableHour of event.schedule[Number(dayOfWeek)]) {
-        const slot = this.getSlotInRange(date, availableHour, event);
-        if (slot instanceof Error) {
-          return slot;
-        }
-        timeslots.push(...slot);
+    for(const availableSlot of availabilityInADay) {
+      const slot = this.getSlotInRange(date, availableSlot, event)
+      if (slot instanceof Error) {
+        return slot
       }
-    }
+      timeslots.push(...slot)
+    } 
+    // for (const dayOfWeek of Object.keys(event?.schedule)) {
+    //   if (day != Number(dayOfWeek)) {
+    //     continue;
+    //   }
+
+    //   for (const availableHour of event.schedule[Number(dayOfWeek)]) {
+    //     const slot = this.getSlotInRange(date, availableHour, event);
+    //     if (slot instanceof Error) {
+    //       return slot;
+    //     }
+    //     timeslots.push(...slot);
+    //   }
+    // }
 
     return timeslots;
   }
