@@ -1,0 +1,87 @@
+{
+  "invitee_publisher_error": false,
+  "today": "2024-10-11",
+  "availability_timezone": "Asia/Makassar",
+  "days": [
+    {
+      "date": "2024-10-11",
+      "status": "unavailable",
+      "spots": [],
+      "invitee_events": []
+    },
+    {
+      "date": "2024-10-16",
+      "status": "available",
+      "spots": [
+        {
+          "status": "available",
+          "start_time": "2024-10-16T18:00:00+08:00",
+          "invitees_remaining": 1
+        }
+      ],
+      "invitee_events": []
+    },
+    {
+      "date": "2024-10-18",
+      "status": "available",
+      "spots": [
+        {
+          "status": "available",
+          "start_time": "2024-10-18T09:00:00+08:00",
+          "invitees_remaining": 1
+        }
+      ],
+      "invitee_events": []
+    },
+    {
+      "date": "2024-10-23",
+      "status": "available",
+      "spots": [
+        {
+          "status": "available",
+          "start_time": "2024-10-23T18:00:00+08:00",
+          "invitees_remaining": 1
+        }
+      ],
+      "invitee_events": []
+    },
+    {
+      "date": "2024-10-25",
+      "status": "available",
+      "spots": [
+        {
+          "status": "available",
+          "start_time": "2024-10-25T09:00:00+08:00",
+          "invitees_remaining": 1
+        }
+      ],
+      "invitee_events": []
+    },
+    {
+      "date": "2024-10-30",
+      "status": "available",
+      "spots": [
+        {
+          "status": "available",
+          "start_time": "2024-10-30T18:00:00+08:00",
+          "invitees_remaining": 1
+        }
+      ],
+      "invitee_events": []
+    }
+  ],
+  "diagnostic_data": null,
+  "current_user": {
+    "id": null,
+    "email": null,
+    "locale": null,
+    "date_notation": null,
+    "time_notation": null,
+    "avatar_url": null,
+    "is_pretending": false,
+    "diagnostics": {
+      "available": false,
+      "enabled": false
+    }
+  }
+}

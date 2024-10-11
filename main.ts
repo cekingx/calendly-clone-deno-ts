@@ -17,7 +17,7 @@ async function main() {
   event.setEventRepo(eventModelAdapter);
 
   const eventId = 1;
-  const month = new Date(Date.UTC(2024, 0));
+  const month = new Date(Date.UTC(2024, 9));
   const result = await event.getAvailability(month, eventId);
   console.log("result", result);
   connection.destroy();
