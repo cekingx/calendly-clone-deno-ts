@@ -1,11 +1,11 @@
 import { beforeEach, describe, it } from "@std/testing/bdd";
-import { EventEntity } from "./entity/event.entity.ts";
+import { EventEntity } from "../entity/event.entity.ts";
 import { expect } from "@std/expect";
 import { HOUR, MINUTE } from "@std/datetime";
-import { Event } from "./event.ts";
-import { AvailableHoursEntity } from "./entity/available-hours.entity.ts";
-import type { ForInteractingWithEventModel } from "./driven-port/for-interacting-with-event-model.ts";
-import { TimeslotStatus } from "./enum/timeslot-status.enum.ts";
+import { Event } from "../event.ts";
+import { AvailableHoursEntity } from "../entity/available-hours.entity.ts";
+import type { ForInteractingWithEventModel } from "../driven-port/for-interacting-with-event-model.ts";
+import { TimeslotStatus } from "../enum/timeslot-status.enum.ts";
 
 const event = new EventEntity({
   name: "Meeting",

@@ -1,11 +1,10 @@
 import type { ForInteractingWithEventModel } from "../app/driven-port/for-interacting-with-event-model.ts";
 import { AvailableHoursEntity } from "../app/entity/available-hours.entity.ts";
 import { EventEntity } from "../app/entity/event.entity.ts";
-import type { Connection, RowDataPacket } from "mysql2/promise";
+import type { RowDataPacket } from "mysql2/promise";
+import { AbstractModel } from "./abstract-model.ts";
 
-export class EventModelAdapter implements ForInteractingWithEventModel {
-  connection: Connection | undefined;
-
+export class EventModelAdapter extends AbstractModel implements ForInteractingWithEventModel  {
   async getById(id: number): Promise<EventEntity | Error> {
     if (!this.connection) {
       return new Error("Connection not set");
@@ -21,6 +20,7 @@ export class EventModelAdapter implements ForInteractingWithEventModel {
     }
 
     const event: EventEntity = new EventEntity({
+      id: (result as RowDataPacket)[0].id,
       name: (result as RowDataPacket)[0].name,
       description: (result as RowDataPacket)[0].description,
       duration: (result as RowDataPacket)[0].duration,
@@ -37,9 +37,5 @@ export class EventModelAdapter implements ForInteractingWithEventModel {
 
   save(_event: EventEntity): Promise<EventEntity | Error> {
     throw new Error("Method not implemented.");
-  }
-
-  setConnection(connection: Connection) {
-    this.connection = connection;
   }
 }
