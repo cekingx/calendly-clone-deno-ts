@@ -1,11 +1,11 @@
 import { DAY } from "@std/datetime";
 import { ForGettingAvailability } from "./driving-port/for-getting-availability.ts";
-import type { Event } from "./entity/event.ts";
+import type { EventEntity } from "./entity/event.entity.ts";
 import type { Timeslot } from "./entity/timeslot.ts";
 import type { AvailableHours } from "./entity/available-hours.ts";
 import type { ForInteractingWithEventModel } from "./driven-port/for-interacting-with-event-model.ts";
 
-export class Calendly implements ForGettingAvailability {
+export class Event implements ForGettingAvailability {
   eventRepo: ForInteractingWithEventModel | undefined;
 
   async getAvailability(
@@ -51,7 +51,7 @@ export class Calendly implements ForGettingAvailability {
     return result;
   }
 
-  getAvailabilityInADay(date: Date, event: Event): Timeslot[] | Error {
+  getAvailabilityInADay(date: Date, event: EventEntity): Timeslot[] | Error {
     const timeslots: Timeslot[] = [];
     if (!event?.schedule) {
       return new Error("Days is not set");
@@ -74,7 +74,7 @@ export class Calendly implements ForGettingAvailability {
   getSlotInRange(
     date: Date,
     availability: AvailableHours,
-    event: Event,
+    event: EventEntity,
   ): Timeslot[] | Error {
     const result: Timeslot[] = [];
     if (!event?.duration) {
@@ -105,7 +105,7 @@ export class Calendly implements ForGettingAvailability {
     return endOfMonth;
   }
 
-  async getEvent(id: number): Promise<Event | Error> {
+  async getEvent(id: number): Promise<EventEntity | Error> {
     if (!this.eventRepo) {
       return new Error("Repo not set");
     }

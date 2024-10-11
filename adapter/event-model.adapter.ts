@@ -1,12 +1,12 @@
 import type { ForInteractingWithEventModel } from "../app/driven-port/for-interacting-with-event-model.ts";
 import { AvailableHours } from "../app/entity/available-hours.ts";
-import { Event } from "../app/entity/event.ts";
+import { EventEntity } from "../app/entity/event.entity.ts";
 import type { Connection, RowDataPacket } from "mysql2/promise";
 
 export class EventModelAdapter implements ForInteractingWithEventModel {
   connection: Connection | undefined;
 
-  async getById(id: number): Promise<Event | Error> {
+  async getById(id: number): Promise<EventEntity | Error> {
     if (!this.connection) {
       return new Error("Connection not set");
     }
@@ -20,7 +20,7 @@ export class EventModelAdapter implements ForInteractingWithEventModel {
       return new Error("Not found");
     }
 
-    const event: Event = new Event({
+    const event: EventEntity = new EventEntity({
       name: (result as RowDataPacket)[0].name,
       description: (result as RowDataPacket)[0].description,
       duration: (result as RowDataPacket)[0].duration,
@@ -35,7 +35,7 @@ export class EventModelAdapter implements ForInteractingWithEventModel {
     return event;
   }
 
-  save(_event: Event): Promise<Event | Error> {
+  save(_event: EventEntity): Promise<EventEntity | Error> {
     throw new Error("Method not implemented.");
   }
 

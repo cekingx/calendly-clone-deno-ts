@@ -1,6 +1,6 @@
-import type { Event } from "../entity/event.ts";
+import type { EventEntity } from "../entity/event.entity.ts";
 
 export interface ForInteractingWithEventModel {
-  getById(id: number): Promise<Event | Error>;
-  save(event: Event): Promise<Event | Error>;
+  getById(id: number): Promise<EventEntity | Error>;
+  save(event: EventEntity): Promise<EventEntity | Error>;
 }

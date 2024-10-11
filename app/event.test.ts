@@ -1,12 +1,12 @@
 import { beforeEach, describe, it } from "@std/testing/bdd";
-import { Event } from "./entity/event.ts";
+import { EventEntity } from "./entity/event.entity.ts";
 import { expect } from "@std/expect";
 import { HOUR, MINUTE } from "@std/datetime";
-import { Calendly } from "./calendly.ts";
+import { Event } from "./event.ts";
 import { AvailableHours } from "./entity/available-hours.ts";
 import type { ForInteractingWithEventModel } from "./driven-port/for-interacting-with-event-model.ts";
 
-const event = new Event({
+const event = new EventEntity({
   name: "Meeting",
   duration: 60 * MINUTE,
   description: "Meeting description",
@@ -18,21 +18,21 @@ event.setSchedule([
 ]);
 
 const mockEventRepo: ForInteractingWithEventModel = {
-  getById: function (_id: number): Promise<Event | Error> {
+  getById: function (_id: number): Promise<EventEntity | Error> {
     return new Promise((resolve) => resolve(event));
   },
-  save: function (_event: Event): Promise<Event | Error> {
+  save: function (_event: EventEntity): Promise<EventEntity | Error> {
     return new Promise((_resolve, reject) =>
       reject(new Error("Unimplemented"))
     );
   },
 };
 
-describe("Calendly", () => {
-  let app: Calendly;
+describe("Event", () => {
+  let app: Event;
 
   beforeEach(function () {
-    app = new Calendly();
+    app = new Event();
     app.setEventRepo(mockEventRepo);
   });
 
