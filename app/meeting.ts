@@ -1,7 +1,5 @@
 import type { ForInteractingWithMeetingModel } from "./driven-port/for-interacting-with-meeting-model.ts";
 import type { ForBookingASlot } from "./driving-port/for-booking-a-slot.ts";
-import type { Availability } from "./driving-port/for-getting-availability.ts";
-import { EventEntity } from "./entity/event.entity.ts";
 import { MeetingEntity } from "./entity/meeting.entity.ts";
 import type { UserEntity } from "./entity/user.entity.ts";
 import { TimeslotStatus } from "./enum/timeslot-status.enum.ts";

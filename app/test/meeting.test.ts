@@ -43,7 +43,7 @@ const toSpy = spy(
     _booker: UserEntity,
   ): Promise<MeetingEntity | Error> {
     return new Promise((resolve, _reject) =>
-      resolve(new Error("Unimplementedddd"))
+      resolve(new Error())
     );
   },
 );

@@ -52,10 +52,7 @@ export class Event implements ForGettingAvailability {
     return result;
   }
 
-  getAvailabilityInADay(
-    date: Date,
-    event: EventEntity,
-  ): TimeslotEntity[] | Error {
+  getAvailabilityInADay(date: Date, event: EventEntity): TimeslotEntity[] | Error {
     const timeslots: TimeslotEntity[] = [];
     if (!event?.schedule) {
       return new Error("Days is not set");
@@ -104,16 +101,12 @@ export class Event implements ForGettingAvailability {
 
   getSlotStatus(date: Date): TimeslotStatus {
     const today = new Date();
-    const todayUTC = Date.UTC(
-      today.getUTCFullYear(),
-      today.getUTCMonth(),
-      today.getUTCDate(),
-    );
+    const todayUTC = Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate());
     if (date.getTime() < todayUTC) {
       return TimeslotStatus.UNAVAILABLE;
     }
 
-    return TimeslotStatus.AVAILABLE;
+    return TimeslotStatus.AVAILABLE
   }
 
   getEndOfMonth(date: Date): Date {
@@ -128,7 +121,7 @@ export class Event implements ForGettingAvailability {
     if (!this.eventRepo) {
       return new Error("Repo not set");
     }
-    return this.eventRepo.getById(id);
+    return await this.eventRepo.getById(id);
   }
 
   setEventRepo(repo: ForInteractingWithEventModel) {
