@@ -1,9 +1,9 @@
-export class AvailableHours {
+export class AvailableHoursEntity {
   day: number;
   start: number;
   end: number;
 
-  constructor(data: AvailableHours) {
+  constructor(data: AvailableHoursEntity) {
     this.day = data.day;
     this.start = data.start;
     this.end = data.end;

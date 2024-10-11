@@ -1,5 +1,5 @@
 import type { ForInteractingWithEventModel } from "../app/driven-port/for-interacting-with-event-model.ts";
-import { AvailableHours } from "../app/entity/available-hours.ts";
+import { AvailableHoursEntity } from "../app/entity/available-hours.entity.ts";
 import { EventEntity } from "../app/entity/event.entity.ts";
 import type { Connection, RowDataPacket } from "mysql2/promise";
 
@@ -29,7 +29,7 @@ export class EventModelAdapter implements ForInteractingWithEventModel {
 
     for (const row of result as Array<any>) {
       event.schedule.push(
-        new AvailableHours({ day: row.day, start: row.start, end: row.end }),
+        new AvailableHoursEntity({ day: row.day, start: row.start, end: row.end }),
       );
     }
     return event;

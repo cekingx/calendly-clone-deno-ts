@@ -1,9 +1,10 @@
 import { DAY } from "@std/datetime";
 import { ForGettingAvailability } from "./driving-port/for-getting-availability.ts";
 import type { EventEntity } from "./entity/event.entity.ts";
-import type { Timeslot } from "./entity/timeslot.ts";
-import type { AvailableHours } from "./entity/available-hours.ts";
+import type { TimeslotEntity } from "./entity/timeslot.entity.ts";
+import type { AvailableHoursEntity } from "./entity/available-hours.entity.ts";
 import type { ForInteractingWithEventModel } from "./driven-port/for-interacting-with-event-model.ts";
+import { TimeslotStatus } from "./enum/timeslot-status.enum.ts";
 
 export class Event implements ForGettingAvailability {
   eventRepo: ForInteractingWithEventModel | undefined;
@@ -11,7 +12,7 @@ export class Event implements ForGettingAvailability {
   async getAvailability(
     month: Date,
     eventId: number,
-  ): Promise<Record<string, Timeslot[]> | Error> {
+  ): Promise<Record<string, TimeslotEntity[]> | Error> {
     if (!this.eventRepo) {
       return new Error("Repo not set");
     }
@@ -22,7 +23,7 @@ export class Event implements ForGettingAvailability {
     if (!event.schedule) {
       return new Error("Days is not set");
     }
-    const result: Record<string, Timeslot[]> = {};
+    const result: Record<string, TimeslotEntity[]> = {};
     const daysOfWeek = event.schedule.reduce((acc: number[], item) => {
       if (item.day && !acc.includes(item.day)) {
         acc.push(item.day);
@@ -51,8 +52,8 @@ export class Event implements ForGettingAvailability {
     return result;
   }
 
-  getAvailabilityInADay(date: Date, event: EventEntity): Timeslot[] | Error {
-    const timeslots: Timeslot[] = [];
+  getAvailabilityInADay(date: Date, event: EventEntity): TimeslotEntity[] | Error {
+    const timeslots: TimeslotEntity[] = [];
     if (!event?.schedule) {
       return new Error("Days is not set");
     }
@@ -73,10 +74,10 @@ export class Event implements ForGettingAvailability {
 
   getSlotInRange(
     date: Date,
-    availability: AvailableHours,
+    availability: AvailableHoursEntity,
     event: EventEntity,
-  ): Timeslot[] | Error {
-    const result: Timeslot[] = [];
+  ): TimeslotEntity[] | Error {
+    const result: TimeslotEntity[] = [];
     if (!event?.duration) {
       return new Error("Duration not set");
     }
@@ -91,10 +92,21 @@ export class Event implements ForGettingAvailability {
       result.push({
         start: (new Date(date.getTime() + start)).toISOString(),
         end: (new Date(date.getTime() + end)).toISOString(),
+        status: this.getSlotStatus(new Date(date.getTime() + start)),
       });
     }
 
     return result;
+  }
+
+  getSlotStatus(date: Date): TimeslotStatus {
+    const today = new Date();
+    const todayUTC = Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate());
+    if (date.getTime() < todayUTC) {
+      return TimeslotStatus.UNAVAILABLE;
+    }
+
+    return TimeslotStatus.AVAILABLE
   }
 
   getEndOfMonth(date: Date): Date {

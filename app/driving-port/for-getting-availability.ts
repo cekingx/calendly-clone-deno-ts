@@ -1,6 +1,6 @@
-import type { Timeslot } from "../entity/timeslot.ts";
+import type { TimeslotEntity } from "../entity/timeslot.entity.ts";
 
-type Availability = Record<string, Timeslot[]>;
+type Availability = Record<string, TimeslotEntity[]>;
 
 export interface ForGettingAvailability {
   getAvailability(

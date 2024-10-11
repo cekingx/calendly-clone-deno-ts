@@ -3,8 +3,9 @@ import { EventEntity } from "./entity/event.entity.ts";
 import { expect } from "@std/expect";
 import { HOUR, MINUTE } from "@std/datetime";
 import { Event } from "./event.ts";
-import { AvailableHours } from "./entity/available-hours.ts";
+import { AvailableHoursEntity } from "./entity/available-hours.entity.ts";
 import type { ForInteractingWithEventModel } from "./driven-port/for-interacting-with-event-model.ts";
+import { TimeslotStatus } from "./enum/timeslot-status.enum.ts";
 
 const event = new EventEntity({
   name: "Meeting",
@@ -12,9 +13,9 @@ const event = new EventEntity({
   description: "Meeting description",
 });
 event.setSchedule([
-  new AvailableHours({ day: 1, start: 8 * HOUR, end: 10 * HOUR }),
-  new AvailableHours({ day: 1, start: 17 * HOUR, end: 18 * HOUR }),
-  new AvailableHours({ day: 3, start: 17 * HOUR, end: 18 * HOUR }),
+  new AvailableHoursEntity({ day: 1, start: 8 * HOUR, end: 10 * HOUR }),
+  new AvailableHoursEntity({ day: 1, start: 17 * HOUR, end: 18 * HOUR }),
+  new AvailableHoursEntity({ day: 3, start: 17 * HOUR, end: 18 * HOUR }),
 ]);
 
 const mockEventRepo: ForInteractingWithEventModel = {
@@ -45,7 +46,7 @@ describe("Event", () => {
       new Date(Date.UTC(2024, 0, 1)),
       1,
     );
-    expect(availability).toEqual({
+    expect(availability).toMatchObject({
       "2024-01-01T00:00:00.000Z": [
         { start: "2024-01-01T08:00:00.000Z", end: "2024-01-01T09:00:00.000Z" },
         { start: "2024-01-01T09:00:00.000Z", end: "2024-01-01T10:00:00.000Z" },
@@ -110,7 +111,7 @@ describe("Event", () => {
         { day: 1, start: 8 * HOUR, end: 10 * HOUR },
         event,
       );
-      expect(slots).toEqual([
+      expect(slots).toMatchObject([
         {
           start: "2024-01-01T08:00:00.000Z",
           end: "2024-01-01T09:00:00.000Z",
@@ -129,7 +130,7 @@ describe("Event", () => {
         event,
       );
 
-      expect(slots).toEqual([
+      expect(slots).toMatchObject([
         {
           start: "2024-01-01T08:00:00.000Z",
           end: "2024-01-01T09:00:00.000Z",
@@ -145,7 +146,7 @@ describe("Event", () => {
         event,
       );
 
-      expect(slots).toEqual([
+      expect(slots).toMatchObject([
         {
           start: "2024-01-01T08:00:00.000Z",
           end: "2024-01-01T09:00:00.000Z",
@@ -161,4 +162,20 @@ describe("Event", () => {
       ]);
     });
   });
+
+  describe("Timeslot status", () => {
+    it("should get unavailable", () => {
+      const today = new Date();
+      const yesterday = new Date(today.getTime() - 24 * HOUR);
+      const status = app.getSlotStatus(yesterday);
+      expect(status).toEqual(TimeslotStatus.UNAVAILABLE);
+    })
+
+    it("should get available", () => {
+      const today = new Date();
+      const tommorow = new Date(today.getTime() + 24 * HOUR);
+      const status = app.getSlotStatus(tommorow);
+      expect(status).toEqual(TimeslotStatus.AVAILABLE);
+    })
+  })
 });

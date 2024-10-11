@@ -1,10 +1,10 @@
-import type { AvailableHours } from "./available-hours.ts";
+import type { AvailableHoursEntity } from "./available-hours.entity.ts";
 
 export class EventEntity {
   name: string | undefined;
   duration: number | undefined;
   description: string | undefined;
-  schedule: AvailableHours[] | undefined;
+  schedule: AvailableHoursEntity[] | undefined;
 
   constructor(data: Partial<EventEntity>) {
     this.name = data.name;
@@ -12,7 +12,7 @@ export class EventEntity {
     this.description = data.description;
   }
 
-  setSchedule(schedule: AvailableHours[]) {
+  setSchedule(schedule: AvailableHoursEntity[]) {
     this.schedule = schedule;
   }
 }
