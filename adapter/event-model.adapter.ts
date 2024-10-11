@@ -4,7 +4,8 @@ import { EventEntity } from "../app/entity/event.entity.ts";
 import type { RowDataPacket } from "mysql2/promise";
 import { AbstractModel } from "./abstract-model.ts";
 
-export class EventModelAdapter extends AbstractModel implements ForInteractingWithEventModel  {
+export class EventModelAdapter extends AbstractModel
+  implements ForInteractingWithEventModel {
   async getById(id: number): Promise<EventEntity | Error> {
     if (!this.connection) {
       return new Error("Connection not set");
@@ -29,7 +30,11 @@ export class EventModelAdapter extends AbstractModel implements ForInteractingWi
 
     for (const row of result as Array<any>) {
       event.schedule.push(
-        new AvailableHoursEntity({ day: row.day, start: row.start, end: row.end }),
+        new AvailableHoursEntity({
+          day: row.day,
+          start: row.start,
+          end: row.end,
+        }),
       );
     }
     return event;

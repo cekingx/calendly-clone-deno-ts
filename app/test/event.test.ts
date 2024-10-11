@@ -169,13 +169,13 @@ describe("Event", () => {
       const yesterday = new Date(today.getTime() - 24 * HOUR);
       const status = app.getSlotStatus(yesterday);
       expect(status).toEqual(TimeslotStatus.UNAVAILABLE);
-    })
+    });
 
     it("should get available", () => {
       const today = new Date();
       const tommorow = new Date(today.getTime() + 24 * HOUR);
       const status = app.getSlotStatus(tommorow);
       expect(status).toEqual(TimeslotStatus.AVAILABLE);
-    })
-  })
+    });
+  });
 });

@@ -11,7 +11,11 @@ export class Meeting implements ForBookingASlot {
   private meetingModel: ForInteractingWithMeetingModel | undefined;
   private event: Event | undefined;
 
-  async book(eventId: number, start: Date, booker: UserEntity): Promise<boolean | Error> {
+  async book(
+    eventId: number,
+    start: Date,
+    booker: UserEntity,
+  ): Promise<boolean | Error> {
     if (!this.meetingModel) {
       return new Error("Meeting model not set");
     }
@@ -24,19 +28,25 @@ export class Meeting implements ForBookingASlot {
       return eventEntity;
     }
 
-    const month = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth()));
+    const month = new Date(
+      Date.UTC(start.getUTCFullYear(), start.getUTCMonth()),
+    );
     const availability = await this.event.getAvailability(month, eventId);
     if (availability instanceof Error) {
       return availability;
     }
 
-    const startDay = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate()));
+    const startDay = new Date(
+      Date.UTC(start.getUTCFullYear(), start.getUTCMonth(), start.getUTCDate()),
+    );
     const slots = availability[startDay.toISOString()];
     if (!slots) {
       return new Error("Slot not available");
     }
 
-    const slot = slots.find((slot) => new Date(slot.start).getTime() === start.getTime());
+    const slot = slots.find((slot) =>
+      new Date(slot.start).getTime() === start.getTime()
+    );
     if (!slot || slot.status !== TimeslotStatus.AVAILABLE) {
       return new Error("Slot not available");
     }
@@ -44,7 +54,7 @@ export class Meeting implements ForBookingASlot {
     const meeting = new MeetingEntity({
       start,
       event: eventEntity,
-    })
+    });
 
     const result = await this.meetingModel.save(meeting, booker);
     if (result instanceof Error) {
